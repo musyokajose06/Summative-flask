@@ -4,7 +4,7 @@ A Flask REST API for managing an inventory of grocery products, enriched with
 real product data from the [OpenFoodFacts](https://world.openfoodfacts.org/)
 API, plus an interactive command-line frontend that talks to that API.
 
-## Problem Definition (Task 1)
+## Problem Definition
 
 Small grocery/inventory operations need a way to track products (name,
 brand, ingredients, price, stock) without manually typing in every product's
@@ -14,7 +14,7 @@ details. This project solves that by:
 - Exposing everything through a RESTful API.
 - Giving the user a friendly CLI menu instead of requiring raw HTTP calls.
 
-## Design (Task 2)
+## Design
 
 **Routes** (RESTful conventions):
 
@@ -27,21 +27,3 @@ details. This project solves that by:
 | DELETE | `/inventory/<id>`          | Remove an item                            |
 | GET    | `/inventory/lookup`        | Query OpenFoodFacts directly (not saved)  |
 
-**Storage:** a plain Python list of `InventoryItem` objects inside
-`InventoryStorage` (see `storage.py`) simulates a database. Each item has an
-auto-incrementing integer `id`.
-
-**Data shape** (mirrors what OpenFoodFacts returns):
-```json
-{
-  "id": 1,
-  "product_name": "Organic Almond Milk",
-  "barcode": "3017620422003",
-  "brands": "Silk",
-  "ingredients_text": "Filtered water, almonds, cane sugar, ...",
-  "price": 3.49,
-  "stock": 24
-}
-```
-
-## Project Structure
