@@ -1,20 +1,3 @@
-"""
-app.py
-------
-Flask REST API for the inventory tool.
-
-Endpoints (per the lab's API design):
-    GET    /inventory              -> fetch all items
-    GET    /inventory/<id>         -> fetch a single item
-    POST   /inventory              -> add a new item
-    PATCH  /inventory/<id>         -> update price/stock/other fields
-    DELETE /inventory/<id>         -> remove an item
-
-Extra endpoint to support "find item on api" from the CLI spec:
-    GET    /inventory/lookup?barcode=...   or   ?name=...
-        -> queries OpenFoodFacts directly, does NOT save to storage
-"""
-
 from flask import Flask, jsonify, request
 
 from storage import storage
@@ -22,19 +5,11 @@ from openfoodfacts_client import fetch_by_barcode, fetch_by_name, OpenFoodFactsE
 
 app = Flask(__name__)
 
-
-# ---------------------------------------------------------------------
-# GET /inventory  -> fetch all items
-# ---------------------------------------------------------------------
 @app.route("/inventory", methods=["GET"])
 def get_all_items():
     items = [item.to_dict() for item in storage.get_all()]
     return jsonify(items), 200
 
-
-# ---------------------------------------------------------------------
-# GET /inventory/<id> -> fetch a single item
-# ---------------------------------------------------------------------
 @app.route("/inventory/<int:item_id>", methods=["GET"])
 def get_item(item_id):
     item = storage.get_by_id(item_id)
@@ -42,10 +17,6 @@ def get_item(item_id):
         return jsonify({"error": f"Item {item_id} not found"}), 404
     return jsonify(item.to_dict()), 200
 
-
-# ---------------------------------------------------------------------
-# GET /inventory/lookup -> query OpenFoodFacts directly (not stored)
-# ---------------------------------------------------------------------
 @app.route("/inventory/lookup", methods=["GET"])
 def lookup_item():
     barcode = request.args.get("barcode")
@@ -64,10 +35,6 @@ def lookup_item():
 
     return jsonify(product_data), 200
 
-
-# ---------------------------------------------------------------------
-# POST /inventory -> add a new item
-# ---------------------------------------------------------------------
 @app.route("/inventory", methods=["POST"])
 def add_item():
     body = request.get_json(silent=True)
@@ -90,7 +57,6 @@ def add_item():
     if enhance and barcode:
         try:
             off_data = fetch_by_barcode(barcode)
-            # Only fill in fields the user didn't already provide
             for field in ("product_name", "brands", "ingredients_text"):
                 if not item_data.get(field):
                     item_data[field] = off_data.get(field)
@@ -109,10 +75,6 @@ def add_item():
     new_item = storage.add(item_data)
     return jsonify(new_item.to_dict()), 201
 
-
-# ---------------------------------------------------------------------
-# PATCH /inventory/<id> -> update an item (e.g. price or stock)
-# ---------------------------------------------------------------------
 @app.route("/inventory/<int:item_id>", methods=["PATCH"])
 def update_item(item_id):
     body = request.get_json(silent=True)
@@ -137,10 +99,6 @@ def update_item(item_id):
 
     return jsonify(updated.to_dict()), 200
 
-
-# ---------------------------------------------------------------------
-# DELETE /inventory/<id> -> remove an item
-# ---------------------------------------------------------------------
 @app.route("/inventory/<int:item_id>", methods=["DELETE"])
 def delete_item(item_id):
     deleted = storage.delete(item_id)
@@ -148,10 +106,6 @@ def delete_item(item_id):
         return jsonify({"error": f"Item {item_id} not found"}), 404
     return jsonify({"message": f"Item {item_id} deleted"}), 200
 
-
-# ---------------------------------------------------------------------
-# Error handling for invalid routes / methods
-# ---------------------------------------------------------------------
 @app.errorhandler(404)
 def not_found(_error):
     return jsonify({"error": "Resource not found"}), 404
@@ -163,7 +117,6 @@ def method_not_allowed(_error):
 
 
 def seed_demo_data():
-    """A couple of starter items so /inventory isn't empty on first run."""
     storage.seed([
         {
             "product_name": "Organic Almond Milk",

@@ -1,23 +1,11 @@
-"""
-storage.py
-----------
-A simple in-memory "database" for InventoryItem objects.
-
-This is intentionally a plain Python list wrapped in a class, per the
-lab's requirement to "update temporary array to simulate storage."
-Swapping this out for a real database later just means rewriting this
-one file - nothing else in the app needs to change.
-"""
-
 from models import InventoryItem
 
 
 class InventoryStorage:
     def __init__(self):
-        self._items = []          # the "temporary array"
+        self._items = []          
         self._next_id = 1
 
-    # ---- read ----------------------------------------------------
     def get_all(self):
         return list(self._items)
 
@@ -27,7 +15,7 @@ class InventoryStorage:
                 return item
         return None
 
-    # ---- write ------------------------------------------------------
+
     def add(self, item_data):
         """item_data: dict without an id. Returns the created InventoryItem."""
         item_data = dict(item_data)
@@ -56,6 +44,4 @@ class InventoryStorage:
         for data in items_data:
             self.add(data)
 
-
-# A single shared instance used across the whole app (module-level singleton)
 storage = InventoryStorage()

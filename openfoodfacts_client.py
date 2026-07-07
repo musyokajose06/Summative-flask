@@ -10,12 +10,10 @@ HEADERS = {"User-Agent": "InventoryCLI/1.0 (student-project@example.com)"}
 
 
 class OpenFoodFactsError(Exception):
-    """Raised when the OpenFoodFacts API can't be reached or returns nothing useful."""
     pass
 
 
 def _extract_fields(product):
-    """Pull just the fields our inventory cares about out of a raw OFF product blob."""
     return {
         "product_name": product.get("product_name") or "Unknown product",
         "brands": product.get("brands"),

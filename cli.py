@@ -2,10 +2,6 @@ import requests
 
 API_BASE = "http://127.0.0.1:5000"
 
-
-# ---------------------------------------------------------------------
-# Helpers for talking to the API, with error handling for API failures
-# ---------------------------------------------------------------------
 def _request(method, path, **kwargs):
     """Wrap requests calls so connection errors don't crash the CLI."""
     url = f"{API_BASE}{path}"
@@ -29,10 +25,6 @@ def _print_item(item):
     print(f"  Price:       ${item.get('price')}")
     print(f"  Stock:       {item.get('stock')}")
 
-
-# ---------------------------------------------------------------------
-# Menu actions
-# ---------------------------------------------------------------------
 def view_all_items():
     response = _request("GET", "/inventory")
     if response is None:

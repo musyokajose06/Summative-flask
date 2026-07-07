@@ -108,4 +108,4 @@ def test_lookup_missing_params(client):
 def test_lookup_by_barcode_live(client):
     """Hits the real OpenFoodFacts API - requires internet access."""
     response = client.get("/inventory/lookup", query_string={"barcode": "3017620422003"})
-    assert response.status_code in (200, 502)  # 502 if API is unreachable in CI
+    assert response.status_code in (200, 502) 
